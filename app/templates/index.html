@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dự đoán thời tiết</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 40px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type=number], select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
+        label { margin-top: 10px; display: block; }
+        input[type=submit] { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        input[type=submit]:hover { background-color: #45a049; }
+        .result { margin-top: 20px; padding: 15px; background-color: #e7f3fe; border-left: 6px solid #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Dự đoán Nhiệt độ Trung bình Ngày Tiếp Theo</h2>
+        <form method="post">
+            <label for="AverTemp">Nhiệt độ trung bình hôm nay (°C)</label>
+            <input type="number" name="AverTemp" step="0.1" required>
+
+            <label for="Precipitation">Lượng mưa (mm)</label>
+            <input type="number" name="Precipitation" step="0.1" required>
+
+            <label for="Humidity">Độ ẩm trung bình (%)</label>
+            <input type="number" name="Humidity" step="0.1" required>
+
+            <label for="WindSpeed">Tốc độ gió (m/s)</label>
+            <input type="number" name="WindSpeed" step="0.1" required>
+
+            <label for="SunDuration">Thời gian nắng (giờ)</label>
+            <input type="number" name="SunDuration" step="0.01" required>
+
+            <label for="Pressure">Áp suất khí quyển (hPa)</label>
+            <input type="number" name="Pressure" step="0.1" required>
+
+            <label for="Year">Năm</label>
+            <input type="number" name="Year" required>
+
+            <label for="Month">Tháng</label>
+            <input type="number" name="Month" required>
+
+            <label for="Day">Ngày</label>
+            <input type="number" name="Day" required>
+
+            <label for="DayOfWeek">Thứ trong tuần (0 = Thứ 2, 6 = Chủ nhật)</label>
+            <input type="number" name="DayOfWeek" required>
+
+            <label for="IsWeekend">Cuối tuần? (0 = Không, 1 = Có)</label>
+            <input type="number" name="IsWeekend" required>
+
+            <label for="Season">Mùa</label>
+            <select name="Season" required>
+                <option value="dry">Mùa khô</option>
+                <option value="rainy">Mùa mưa</option>
+            </select>
+
+            <input type="submit" value="Dự đoán">
+        </form>
+
+        {% if prediction is not none %}
+            <div class="result">
+                <strong>Dự đoán nhiệt độ trung bình ngày mai:</strong> {{ prediction }} °C
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

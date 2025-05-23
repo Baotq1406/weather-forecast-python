@@ -15,7 +15,7 @@ parameters = [
     "PS"                  # Áp suất (hPa)
 ]
 
-# Dải thời gian: 2015-01-01 đến 2023-12-31
+# Dải thời gian: 2015-01-01 đến 2024-12-31
 start_date = "20150101"
 end_date = "20241231"
 
