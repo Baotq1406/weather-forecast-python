@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt  # Thư viện vẽ biểu đồ cơ bản
 # Định nghĩa hàm chính
 def main():
     # Đường dẫn đến mô hình KNN đã huấn luyện
-    model_path = r"D:\Học Máy\weather-forecast-python_demo_01\models\knn_model_05.pkl"
+    model_path = r"D:\Học Máy\weather-forecast-python_demo_01\models\random_forest_model_02.pkl"
     
     # Đường dẫn chứa tập dữ liệu kiểm tra (test)
     test_data_dir = r"D:\Học Máy\weather-forecast-python_demo_01\data\test_data"
