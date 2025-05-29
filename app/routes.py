@@ -1,48 +1,50 @@
-from flask import Blueprint, request, render_template
-import pandas as pd
-import joblib
+# routes.py
 
+# Import các thư viện cần thiết từ Flask và thư viện ngoài
+from flask import Blueprint, render_template, request  # Để xử lý tuyến đường (routes), render HTML và nhận dữ liệu từ form
+import joblib  # Dùng để load mô hình đã lưu
+import pandas as pd  # Dùng để xử lý dữ liệu đầu vào dưới dạng DataFrame
+
+# Tạo một Blueprint để quản lý nhóm các route liên quan (tách riêng phần giao diện người dùng)
 main = Blueprint('main', __name__)
 
-# Load mô hình
-model = joblib.load(r'd:\Học Máy\weather-forecast-python\models\knn_weather_model.pkl')
+# Đường dẫn đến mô hình học máy đã được huấn luyện và lưu bằng joblib
+model_path = r"D:\Học Máy\weather-forecast-python_demo_01\models\knn_model_05.pkl"
 
+# Load mô hình từ file
+model = joblib.load(model_path)
+
+# Định nghĩa một route cho trang chủ ('/') xử lý cả phương thức GET và POST
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    prediction = None
+    prediction = None  # Biến lưu kết quả dự đoán, mặc định là None
+    selected_date = ''  # Biến lưu ngày được chọn từ form, mặc định rỗng
+
+    # Nếu người dùng gửi biểu mẫu (POST)
     if request.method == 'POST':
-        # Lấy dữ liệu form
-        input_data = {
-            'AverTemp(°C)': float(request.form['AverTemp']),
-            'Precipitation(mm)': float(request.form['Precipitation']),
-            'AverHumidity(%)': float(request.form['Humidity']),
-            'WindSpeed(m/s)': float(request.form['WindSpeed']),
-            'SunDuration(giờ)': float(request.form['SunDuration']),
-            'AtmosPressure(hPa)': float(request.form['Pressure']),
-            'Year': int(request.form['Year']),
-            'Month': int(request.form['Month']),
-            'Day': int(request.form['Day']),
-            'DayOfWeek': int(request.form['DayOfWeek']),
-            'IsWeekend': int(request.form['IsWeekend']),
-            'Season_Mùa mưa': 1 if request.form['Season'] == 'rainy' else 0
-        }
+        try:
+            # Lấy dữ liệu ngày được nhập từ form
+            selected_date = request.form['date']
 
-        expected_columns = [
-            'AverTemp(°C)', 'Precipitation(mm)', 'AverHumidity(%)', 'WindSpeed(m/s)',
-            'SunDuration(giờ)', 'AtmosPressure(hPa)', 'Year', 'Month', 'Day',
-            'DayOfWeek', 'IsWeekend', 'Season_Mùa mưa'
-        ]
+            # Lấy các giá trị đầu vào từ form và chuyển sang kiểu float
+            input_data = {
+                'Temp_C': float(request.form['Temp_C']),  # Nhiệt độ (độ C)
+                'Humidity_pct': float(request.form['Humidity_pct']),  # Độ ẩm (%)
+                'Precipitation_mm': float(request.form['Precipitation_mm']),  # Lượng mưa (mm)
+                'WindSpeed_kmh': float(request.form['WindSpeed_kmh']),  # Tốc độ gió (km/h)
+                'CloudCover_pct': float(request.form['CloudCover_pct']),  # Mức độ mây che phủ (%)
+                'AtmosPressure_hPa': float(request.form['AtmosPressure_hPa'])  # Áp suất khí quyển (hPa)
+            }
 
-        df = pd.DataFrame([input_data])
+            # Tạo một DataFrame từ dữ liệu đầu vào (phải có đúng định dạng mà mô hình yêu cầu)
+            df = pd.DataFrame([input_data])
 
-        # Thêm các cột thiếu (nếu có)
-        for col in expected_columns:
-            if col not in df.columns:
-                df[col] = 0
+            # Dự đoán kết quả từ mô hình và lấy giá trị đầu tiên (do kết quả là một mảng)
+            prediction = model.predict(df)[0]
 
-        df = df[expected_columns]
+        except Exception as e:
+            # Nếu có lỗi xảy ra, gán thông báo lỗi cho biến prediction để hiển thị
+            prediction = f"Lỗi: {e}"
 
-        # Dự đoán
-        prediction = model.predict(df)[0]
-
-    return render_template('index.html', prediction=prediction)
+    # Trả về template HTML kèm theo kết quả dự đoán và ngày đã chọn (nếu có)
+    return render_template('index.html', prediction=prediction, selected_date=selected_date)

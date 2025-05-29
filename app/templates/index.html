@@ -4,66 +4,76 @@
     <meta charset="UTF-8">
     <title>Dự đoán thời tiết</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 40px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input[type=number], select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
-        label { margin-top: 10px; display: block; }
-        input[type=submit] { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
-        input[type=submit]:hover { background-color: #45a049; }
-        .result { margin-top: 20px; padding: 15px; background-color: #e7f3fe; border-left: 6px solid #2196F3; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            font-size: 18px;
+            text-align: center;
+            color: #007BFF;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Dự đoán Nhiệt độ Trung bình Ngày Tiếp Theo</h2>
-        <form method="post">
-            <label for="AverTemp">Nhiệt độ trung bình hôm nay (°C)</label>
-            <input type="number" name="AverTemp" step="0.1" required>
+    <h1>Dự đoán mô tả thời tiết</h1>
+    <form method="post">
+        <label for="date">Ngày:</label>
+        <input type="date" name="date" value="{{ request.form.date }}" required><br>
 
-            <label for="Precipitation">Lượng mưa (mm)</label>
-            <input type="number" name="Precipitation" step="0.1" required>
+        <label for="Temp_C">Nhiệt độ (Temp_C):</label>
+        <input type="number" step="any" name="Temp_C" value="{{ request.form.Temp_C }}" required><br>
 
-            <label for="Humidity">Độ ẩm trung bình (%)</label>
-            <input type="number" name="Humidity" step="0.1" required>
+        <label for="Humidity_pct">Độ ẩm (%):</label>
+        <input type="number" step="any" name="Humidity_pct" value="{{ request.form.Humidity_pct }}" required><br>
 
-            <label for="WindSpeed">Tốc độ gió (m/s)</label>
-            <input type="number" name="WindSpeed" step="0.1" required>
+        <label for="Precipitation_mm">Lượng mưa (mm):</label>
+        <input type="number" step="any" name="Precipitation_mm" value="{{ request.form.Precipitation_mm }}" required><br>
 
-            <label for="SunDuration">Thời gian nắng (giờ)</label>
-            <input type="number" name="SunDuration" step="0.01" required>
+        <label for="WindSpeed_kmh">Tốc độ gió (km/h):</label>
+        <input type="number" step="any" name="WindSpeed_kmh" value="{{ request.form.WindSpeed_kmh }}" required><br>
 
-            <label for="Pressure">Áp suất khí quyển (hPa)</label>
-            <input type="number" name="Pressure" step="0.1" required>
+        <label for="CloudCover_pct">Độ che phủ mây (%):</label>
+        <input type="number" step="any" name="CloudCover_pct" value="{{ request.form.CloudCover_pct }}" required><br>
 
-            <label for="Year">Năm</label>
-            <input type="number" name="Year" required>
+        <label for="AtmosPressure_hPa">Áp suất không khí (hPa):</label>
+        <input type="number" step="any" name="AtmosPressure_hPa" value="{{ request.form.AtmosPressure_hPa }}" required><br>
 
-            <label for="Month">Tháng</label>
-            <input type="number" name="Month" required>
+        <button type="submit">Dự đoán</button>
+    </form>
 
-            <label for="Day">Ngày</label>
-            <input type="number" name="Day" required>
-
-            <label for="DayOfWeek">Thứ trong tuần (0 = Thứ 2, 6 = Chủ nhật)</label>
-            <input type="number" name="DayOfWeek" required>
-
-            <label for="IsWeekend">Cuối tuần? (0 = Không, 1 = Có)</label>
-            <input type="number" name="IsWeekend" required>
-
-            <label for="Season">Mùa</label>
-            <select name="Season" required>
-                <option value="dry">Mùa khô</option>
-                <option value="rainy">Mùa mưa</option>
-            </select>
-
-            <input type="submit" value="Dự đoán">
-        </form>
-
-        {% if prediction is not none %}
-            <div class="result">
-                <strong>Dự đoán nhiệt độ trung bình ngày mai:</strong> {{ prediction }} °C
-            </div>
-        {% endif %}
+    {% if prediction %}
+    <div class="result">
+        Ngày {{ selected_date }} - Mô tả thời tiết dự đoán: <strong>{{ prediction }}</strong>
     </div>
+    {% endif %}
 </body>
 </html>
